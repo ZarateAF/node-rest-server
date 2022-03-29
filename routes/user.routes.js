@@ -12,8 +12,8 @@ const {
   emailIsValid,
   userIdExists,
 } = require("../helpers/db-validators");
-const { fieldsValidations } = require("../middlewares/field-validator");
-const { jwtValidation } = require("../middlewares/jwt-validator");
+
+const middleware = require("../middlewares")
 
 const router = Router();
 
@@ -25,7 +25,7 @@ router.put(
     check("id", "Id is not valid").isMongoId(),
     check("id").custom(userIdExists),
     check("role").custom(roleIsValid),
-    fieldsValidations,
+    middleware.fieldsValidations,
   ],
   userPut
 );
@@ -38,7 +38,7 @@ router.post(
     check("email", "Email invalid").isEmail(),
     check("email").custom(emailIsValid),
     check("role").custom(roleIsValid),
-    fieldsValidations,
+    middleware.fieldsValidations,
   ],
   userPost
 );
@@ -46,10 +46,12 @@ router.post(
 router.delete(
   "/:id",
   [
-    jwtValidation,
+    middleware.jwtValidation,
+    // isAdmin,
+    middleware.hasAnyRole('ADMIN_ROLE', 'SALES_ROLE'),
     check("id", "Id is not valid").isMongoId(),
     check("id").custom(userIdExists),
-    fieldsValidations,
+    middleware.fieldsValidations,
   ],
   userDelete
 );
