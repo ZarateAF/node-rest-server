@@ -1,5 +1,4 @@
 const { request, response } = require("express");
-const req = require("express/lib/request");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
